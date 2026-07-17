@@ -1,0 +1,167 @@
+@import "tailwindcss";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Design Tokens — from design-strategy.md
+   All colors, typography, spacing defined here. NEVER hardcode values elsewhere.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* ── Typography ───────────────────────────────────────────────────────── */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* ── Base palette ─────────────────────────────────────────────────────── */
+  --color-bg: #F7F8FA;
+  --color-surface: #FFFFFF;
+  --color-border: #E5E7EB;
+  --color-text-primary: #111827;
+  --color-text-secondary: #6B7280;
+  --color-brand: #4F46E5;
+  --color-brand-soft: #EEF2FF;
+  --color-brand-hover: #4338CA;
+
+  /* ── Semantic / status ────────────────────────────────────────────────── */
+  --color-success: #16A34A;
+  --color-success-soft: #DCFCE7;
+  --color-warning: #D97706;
+  --color-warning-soft: #FEF3C7;
+  --color-danger: #DC2626;
+  --color-danger-soft: #FEE2E2;
+  --color-neutral: #6B7280;
+  --color-neutral-soft: #F3F4F6;
+  --color-info: #2563EB;
+  --color-info-soft: #DBEAFE;
+
+  /* ── Sidebar ──────────────────────────────────────────────────────────── */
+  --color-sidebar-bg: #1E1E2D;
+  --color-sidebar-text: #A1A1AA;
+  --color-sidebar-text-active: #FFFFFF;
+  --color-sidebar-hover: #2A2A3C;
+  --color-sidebar-active-bg: rgba(79, 70, 229, 0.15);
+
+  /* ── Elevation ────────────────────────────────────────────────────────── */
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  --shadow-dropdown: 0 4px 12px 0 rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+  --shadow-modal: 0 8px 24px 0 rgba(0, 0, 0, 0.12), 0 4px 8px -4px rgba(0, 0, 0, 0.08);
+
+  /* ── Border radius ────────────────────────────────────────────────────── */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Global base styles
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-feature-settings: "tnum"; /* tabular numbers globally */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+}
+
+/* ── Typography scale ────────────────────────────────────────────────────── */
+
+.text-display {
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 600;
+}
+
+.text-h2 {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+}
+
+.text-h3 {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 600;
+}
+
+.text-body {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.text-body-sm {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
+.text-mono-metric {
+  font-size: 28px;
+  line-height: 34px;
+  font-weight: 600;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Scrollbar (thin, subtle) ────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* ── Focus ring ──────────────────────────────────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Selection ───────────────────────────────────────────────────────────── */
+
+::selection {
+  background-color: var(--color-brand-soft);
+  color: var(--color-brand);
+}

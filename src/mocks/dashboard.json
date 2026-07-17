@@ -1,0 +1,60 @@
+{
+  "kpis": {
+    "avgUtilization": { "value": 84.2, "previous": 81.5, "suffix": "%" },
+    "attendanceRate": { "value": 92.1, "previous": 90.8, "suffix": "%" },
+    "activeEmployees": { "value": 23, "previous": 22, "suffix": "" },
+    "flaggedEmployees": { "value": 4, "previous": 6, "suffix": "" }
+  },
+  "hoursTrend": [
+    { "date": "Jun 16", "hours": 6.8 },
+    { "date": "Jun 17", "hours": 7.2 },
+    { "date": "Jun 18", "hours": 7.0 },
+    { "date": "Jun 19", "hours": 6.5 },
+    { "date": "Jun 20", "hours": 7.4 },
+    { "date": "Jun 23", "hours": 7.1 },
+    { "date": "Jun 24", "hours": 7.6 },
+    { "date": "Jun 25", "hours": 7.3 },
+    { "date": "Jun 26", "hours": 6.9 },
+    { "date": "Jun 27", "hours": 7.8 },
+    { "date": "Jun 30", "hours": 7.5 },
+    { "date": "Jul 01", "hours": 7.2 },
+    { "date": "Jul 02", "hours": 7.7 },
+    { "date": "Jul 03", "hours": 7.0 },
+    { "date": "Jul 04", "hours": 6.2 },
+    { "date": "Jul 07", "hours": 7.4 },
+    { "date": "Jul 08", "hours": 7.6 },
+    { "date": "Jul 09", "hours": 7.1 },
+    { "date": "Jul 10", "hours": 7.9 },
+    { "date": "Jul 11", "hours": 7.3 },
+    { "date": "Jul 14", "hours": 7.5 }
+  ],
+  "departmentComparison": [
+    { "department": "Engineering", "utilization": 88.5, "employees": 8 },
+    { "department": "Design", "utilization": 82.3, "employees": 3 },
+    { "department": "Marketing", "utilization": 79.1, "employees": 3 },
+    { "department": "Sales", "utilization": 85.7, "employees": 3 },
+    { "department": "Finance", "utilization": 91.2, "employees": 2 },
+    { "department": "HR", "utilization": 86.4, "employees": 2 },
+    { "department": "Operations", "utilization": 83.9, "employees": 2 },
+    { "department": "Support", "utilization": 78.5, "employees": 2 }
+  ],
+  "appCategorySplit": [
+    { "category": "Productive", "value": 62, "color": "#16A34A" },
+    { "category": "Neutral", "value": 24, "color": "#2563EB" },
+    { "category": "Distracting", "value": 14, "color": "#D97706" }
+  ],
+  "alerts": [
+    { "id": "alert-1", "type": "warning", "message": "3 employees below 60% utilization for 3+ consecutive days", "timestamp": "2026-07-15T08:30:00Z", "read": false },
+    { "id": "alert-2", "type": "info", "message": "Engineering team averaged 88.5% utilization this week — up 3.2%", "timestamp": "2026-07-15T07:00:00Z", "read": false },
+    { "id": "alert-3", "type": "warning", "message": "5 employees logged under 70% hours this week", "timestamp": "2026-07-14T16:00:00Z", "read": true },
+    { "id": "alert-4", "type": "danger", "message": "Andre Jackson has been inactive for 5+ working days", "timestamp": "2026-07-14T10:00:00Z", "read": false },
+    { "id": "alert-5", "type": "success", "message": "Raj Kapoor achieved 100% utilization for 4 consecutive weeks", "timestamp": "2026-07-13T12:00:00Z", "read": true }
+  ],
+  "topEmployees": [
+    { "id": "emp-017", "name": "Raj Kapoor", "department": "Engineering", "score": 96.2, "hoursUtilization": 98.5 },
+    { "id": "emp-006", "name": "Aisha Patel", "department": "Engineering", "score": 94.1, "hoursUtilization": 95.2 },
+    { "id": "emp-002", "name": "Priya Sharma", "department": "Engineering", "score": 92.8, "hoursUtilization": 93.4 },
+    { "id": "emp-007", "name": "David Kim", "department": "Finance", "score": 91.5, "hoursUtilization": 94.1 },
+    { "id": "emp-001", "name": "Alex Thompson", "department": "Engineering", "score": 90.3, "hoursUtilization": 91.8 }
+  ]
+}

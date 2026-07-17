@@ -1,0 +1,232 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Trophy, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import PageContainer from '@/components/shared/layout/PageContainer';
+import Card from '@/components/shared/ui/Card';
+import Avatar from '@/components/shared/ui/Avatar';
+import ProgressBar from '@/components/shared/ui/ProgressBar';
+import Button from '@/components/shared/ui/Button';
+import EmptyState from '@/components/shared/ui/EmptyState';
+import { SkeletonTable } from '@/components/shared/ui/Skeleton';
+import { DEPARTMENTS, TIME_PERIOD_LABELS } from '@/utils/constants';
+import { formatHours } from '@/utils/formatters';
+import { getScoreStatus } from '@/utils/productivityScore';
+import { getLeaderboard } from '@/services/leaderboardService';
+
+const TREND_ICONS = {
+  up: <TrendingUp size={14} style={{ color: 'var(--color-success)' }} />,
+  down: <TrendingDown size={14} style={{ color: 'var(--color-danger)' }} />,
+  same: <Minus size={14} style={{ color: 'var(--color-neutral)' }} />,
+};
+
+const MEDAL_COLORS = ['#FFD700', '#C0C0C0', '#CD7F32'];
+
+export default function LeaderboardPage() {
+  const navigate = useNavigate();
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [department, setDepartment] = useState('');
+  const [period, setPeriod] = useState('weekly');
+  const [expandedRow, setExpandedRow] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      setIsLoading(true);
+      const result = await getLeaderboard({ department: department || undefined });
+      if (!cancelled) { setData(result); setIsLoading(false); }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, [department, period]);
+
+  if (isLoading) return <PageContainer><SkeletonTable rows={10} cols={5} /></PageContainer>;
+
+  const top3 = data.slice(0, 3);
+
+  return (
+    <PageContainer>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        {/* Podium */}
+        {top3.length === 3 && (
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', alignItems: 'flex-end', padding: '20px 0' }}>
+            {[top3[1], top3[0], top3[2]].map((emp, i) => {
+              const actualIndex = i === 0 ? 1 : i === 1 ? 0 : 2;
+              const heights = [140, 180, 120];
+              return (
+                <motion.div
+                  key={emp.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1, duration: 0.4 }}
+                  style={{
+                    display: 'flex', flexDirection: 'column', alignItems: 'center',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => navigate(`/employees/${emp.id}`)}
+                >
+                  <Avatar name={emp.name} size={actualIndex === 0 ? 56 : 48} />
+                  <div style={{
+                    fontSize: actualIndex === 0 ? '15px' : '13px',
+                    fontWeight: 600, marginTop: '8px', textAlign: 'center',
+                    color: 'var(--color-text-primary)',
+                  }}>
+                    {emp.name}
+                  </div>
+                  <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>{emp.department}</div>
+                  <div style={{
+                    fontSize: actualIndex === 0 ? '24px' : '20px',
+                    fontWeight: 700, fontFeatureSettings: '"tnum"',
+                    color: MEDAL_COLORS[actualIndex], marginTop: '4px',
+                  }}>
+                    {emp.score}
+                  </div>
+                  <div style={{
+                    width: actualIndex === 0 ? '120px' : '100px',
+                    height: `${heights[i]}px`,
+                    borderRadius: '12px 12px 0 0',
+                    marginTop: '8px',
+                    background: `linear-gradient(180deg, ${MEDAL_COLORS[actualIndex]}30 0%, ${MEDAL_COLORS[actualIndex]}10 100%)`,
+                    border: `1px solid ${MEDAL_COLORS[actualIndex]}40`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <Trophy size={actualIndex === 0 ? 28 : 22} style={{ color: MEDAL_COLORS[actualIndex] }} />
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Filters */}
+        <Card padding="12px 16px">
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
+            {['weekly', 'monthly', 'quarterly'].map(p => (
+              <Button
+                key={p}
+                size="sm"
+                variant={period === p ? 'primary' : 'ghost'}
+                onClick={() => setPeriod(p)}
+              >
+                {TIME_PERIOD_LABELS[p]}
+              </Button>
+            ))}
+            <div style={{ flex: 1 }} />
+            <select
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              style={{
+                padding: '8px 12px', borderRadius: 'var(--radius-sm)',
+                border: '1px solid var(--color-border)', background: 'var(--color-surface)',
+                fontSize: '13px', fontFamily: 'var(--font-sans)', color: 'var(--color-text-primary)',
+              }}
+            >
+              <option value="">All Departments</option>
+              {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
+            </select>
+          </div>
+        </Card>
+
+        {/* Full leaderboard table */}
+        <Card padding="0">
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+              <thead>
+                <tr>
+                  {['Rank', 'Employee', 'Department', 'Score', 'Hours', 'Trend', ''].map(h => (
+                    <th key={h} style={{
+                      padding: '12px 16px', textAlign: 'left', fontWeight: 600, fontSize: '12px',
+                      textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-text-secondary)',
+                      background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)',
+                    }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((emp) => (
+                  <>
+                    <tr
+                      key={emp.id}
+                      onClick={() => setExpandedRow(expandedRow === emp.id ? null : emp.id)}
+                      style={{
+                        cursor: 'pointer', transition: 'background 0.1s',
+                        background: emp.rank <= 3 ? `${MEDAL_COLORS[emp.rank - 1]}08` : 'transparent',
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = 'var(--color-bg)'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = emp.rank <= 3 ? `${MEDAL_COLORS[emp.rank - 1]}08` : 'transparent'}
+                    >
+                      <td style={{ padding: '12px 16px', borderBottom: '1px solid var(--color-border)', fontWeight: 700, width: '60px' }}>
+                        <span style={{
+                          color: emp.rank <= 3 ? MEDAL_COLORS[emp.rank - 1] : 'var(--color-text-secondary)',
+                          fontSize: emp.rank <= 3 ? '16px' : '14px',
+                        }}>
+                          #{emp.rank}
+                        </span>
+                      </td>
+                      <td style={{ padding: '12px 16px', borderBottom: '1px solid var(--color-border)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <Avatar name={emp.name} size={32} />
+                          <div>
+                            <div style={{ fontWeight: 500 }}>{emp.name}</div>
+                            <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>{emp.role}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td style={{ padding: '12px 16px', borderBottom: '1px solid var(--color-border)', color: 'var(--color-text-secondary)' }}>
+                        {emp.department}
+                      </td>
+                      <td style={{ padding: '12px 16px', borderBottom: '1px solid var(--color-border)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: '120px' }}>
+                          <ProgressBar value={emp.score} max={100} height={6} style={{ flex: 1, maxWidth: '80px' }} animated={false} />
+                          <span style={{ fontWeight: 600, fontFeatureSettings: '"tnum"', color: `var(--color-${getScoreStatus(emp.score)})` }}>
+                            {emp.score}
+                          </span>
+                        </div>
+                      </td>
+                      <td style={{ padding: '12px 16px', borderBottom: '1px solid var(--color-border)', fontFeatureSettings: '"tnum"' }}>
+                        {formatHours(emp.hoursWorked)} / {formatHours(emp.hoursAllotted)}
+                      </td>
+                      <td style={{ padding: '12px 16px', borderBottom: '1px solid var(--color-border)' }}>
+                        {TREND_ICONS[emp.trend]}
+                      </td>
+                      <td style={{ padding: '12px 16px', borderBottom: '1px solid var(--color-border)', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+                        {expandedRow === emp.id ? '▲' : '▼'}
+                      </td>
+                    </tr>
+                    {expandedRow === emp.id && (
+                      <tr key={`${emp.id}-expanded`}>
+                        <td colSpan={7} style={{ padding: '16px 24px', background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            transition={{ duration: 0.2 }}
+                            style={{ display: 'flex', gap: '32px', flexWrap: 'wrap' }}
+                          >
+                            {[
+                              { label: 'Hours Utilization (40%)', value: emp.breakdown.hours },
+                              { label: 'Productive App Usage (35%)', value: emp.breakdown.apps },
+                              { label: 'Attendance Consistency (25%)', value: emp.breakdown.attendance },
+                            ].map(item => (
+                              <div key={item.label} style={{ minWidth: '200px' }}>
+                                <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>{item.label}</div>
+                                <ProgressBar value={item.value} max={100} height={6} showLabel animated={false} />
+                              </div>
+                            ))}
+                            <Button size="sm" variant="secondary" onClick={() => navigate(`/employees/${emp.id}`)}>
+                              View Profile →
+                            </Button>
+                          </motion.div>
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      </div>
+    </PageContainer>
+  );
+}

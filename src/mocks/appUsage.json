@@ -1,0 +1,27 @@
+{
+  "orgWide": [
+    { "app": "VS Code", "category": "productive", "totalMinutes": 12450, "employees": 10, "trend": 5.2 },
+    { "app": "Slack", "category": "neutral", "totalMinutes": 9800, "employees": 24, "trend": -1.3 },
+    { "app": "Google Chrome", "category": "neutral", "totalMinutes": 8920, "employees": 25, "trend": 2.1 },
+    { "app": "Figma", "category": "productive", "totalMinutes": 5640, "employees": 5, "trend": 8.5 },
+    { "app": "Jira", "category": "productive", "totalMinutes": 4830, "employees": 18, "trend": 3.0 },
+    { "app": "Google Docs", "category": "productive", "totalMinutes": 4200, "employees": 20, "trend": 1.8 },
+    { "app": "Zoom", "category": "neutral", "totalMinutes": 3950, "employees": 22, "trend": -4.2 },
+    { "app": "YouTube", "category": "distracting", "totalMinutes": 3100, "employees": 15, "trend": 2.5 },
+    { "app": "Gmail", "category": "productive", "totalMinutes": 2870, "employees": 24, "trend": -0.5 },
+    { "app": "GitHub", "category": "productive", "totalMinutes": 2650, "employees": 8, "trend": 6.1 },
+    { "app": "Notion", "category": "productive", "totalMinutes": 2400, "employees": 14, "trend": 4.7 },
+    { "app": "Twitter/X", "category": "distracting", "totalMinutes": 1850, "employees": 10, "trend": -2.1 },
+    { "app": "Excel", "category": "productive", "totalMinutes": 1720, "employees": 8, "trend": 0.3 },
+    { "app": "Reddit", "category": "distracting", "totalMinutes": 1540, "employees": 9, "trend": 3.8 },
+    { "app": "Spotify", "category": "neutral", "totalMinutes": 1390, "employees": 12, "trend": 1.1 }
+  ],
+  "categoryTrend": [
+    { "week": "W24", "productive": 68, "neutral": 20, "distracting": 12 },
+    { "week": "W25", "productive": 65, "neutral": 22, "distracting": 13 },
+    { "week": "W26", "productive": 70, "neutral": 19, "distracting": 11 },
+    { "week": "W27", "productive": 63, "neutral": 23, "distracting": 14 },
+    { "week": "W28", "productive": 66, "neutral": 21, "distracting": 13 },
+    { "week": "W29", "productive": 62, "neutral": 24, "distracting": 14 }
+  ]
+}
