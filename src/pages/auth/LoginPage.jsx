@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+
 import { Activity, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import Button from '@/components/shared/ui/Button';
@@ -31,27 +31,10 @@ export default function LoginPage() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: 'linear-gradient(135deg, #1E1E2D 0%, #2D1B69 50%, #1E1E2D 100%)',
+      background: 'var(--color-bg)',
       padding: '24px',
     }}>
-      {/* Decorative bg elements */}
-      <div style={{
-        position: 'fixed', top: '-50%', right: '-30%',
-        width: '800px', height: '800px', borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(79,70,229,0.15) 0%, transparent 70%)',
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'fixed', bottom: '-40%', left: '-20%',
-        width: '600px', height: '600px', borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%)',
-        pointerEvents: 'none',
-      }} />
-
-      <motion.div
-        initial={{ opacity: 0, y: 24, scale: 0.96 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      <div
         style={{
           width: '100%',
           maxWidth: '420px',
@@ -67,7 +50,7 @@ export default function LoginPage() {
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{
             width: '48px', height: '48px', borderRadius: 'var(--radius-md)',
-            background: 'linear-gradient(135deg, var(--color-brand), #7C3AED)',
+            background: 'var(--color-brand)',
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
             marginBottom: '16px',
           }}>
@@ -154,7 +137,7 @@ export default function LoginPage() {
           This system monitors work-hours activity to support productivity insights.
           <br />All data is handled per company privacy policy.
         </p>
-      </motion.div>
+      </div>
     </div>
   );
 }

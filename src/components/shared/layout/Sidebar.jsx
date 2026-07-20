@@ -101,19 +101,10 @@ export default function Sidebar({ collapsed, onToggle }) {
         }}>
           <div style={{
             width: '32px', height: '32px', borderRadius: '8px',
-            background: 'linear-gradient(135deg, var(--color-brand), #7C3AED)',
+            background: 'var(--color-brand)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             position: 'relative',
           }}>
-            {/* Subtle pulse ring behind the icon */}
-            <motion.div
-              animate={{ scale: [1, 1.4, 1], opacity: [0.5, 0, 0.5] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-              style={{
-                position: 'absolute', inset: 0, borderRadius: '8px',
-                border: '2px solid var(--color-brand)',
-              }}
-            />
             <Activity size={18} color="#fff" style={{ position: 'relative', zIndex: 1 }} />
           </div>
           <AnimatePresence>
@@ -236,8 +227,7 @@ function SidebarLink({ item, collapsed, active, onNavigate }) {
       }}
     >
       {active && (
-        <motion.div
-          layoutId="sidebar-active-indicator"
+        <div
           style={{
             position: 'absolute',
             left: 0,
@@ -248,7 +238,6 @@ function SidebarLink({ item, collapsed, active, onNavigate }) {
             borderRadius: '0 4px 4px 0',
             background: 'var(--color-brand)',
           }}
-          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
         />
       )}
       {Icon && <Icon size={20} style={{ flexShrink: 0 }} />}

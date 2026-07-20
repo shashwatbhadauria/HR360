@@ -19,9 +19,9 @@
   --color-border: #E5E7EB;
   --color-text-primary: #111827;
   --color-text-secondary: #6B7280;
-  --color-brand: #4F46E5;
-  --color-brand-soft: #EEF2FF;
-  --color-brand-hover: #4338CA;
+  --color-brand: #2563EB;
+  --color-brand-soft: #EFF6FF;
+  --color-brand-hover: #1D4ED8;
 
   /* ── Semantic / status ────────────────────────────────────────────────── */
   --color-success: #16A34A;
@@ -36,11 +36,11 @@
   --color-info-soft: #DBEAFE;
 
   /* ── Sidebar ──────────────────────────────────────────────────────────── */
-  --color-sidebar-bg: #1E1E2D;
-  --color-sidebar-text: #A1A1AA;
+  --color-sidebar-bg: #0F172A;
+  --color-sidebar-text: #94A3B8;
   --color-sidebar-text-active: #FFFFFF;
-  --color-sidebar-hover: #2A2A3C;
-  --color-sidebar-active-bg: rgba(79, 70, 229, 0.15);
+  --color-sidebar-hover: #1E293B;
+  --color-sidebar-active-bg: #1E293B;
 
   /* ── Elevation ────────────────────────────────────────────────────────── */
   --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
@@ -48,9 +48,9 @@
   --shadow-modal: 0 8px 24px 0 rgba(0, 0, 0, 0.12), 0 4px 8px -4px rgba(0, 0, 0, 0.08);
 
   /* ── Border radius ────────────────────────────────────────────────────── */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
   --radius-full: 9999px;
 }
 

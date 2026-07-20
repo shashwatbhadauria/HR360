@@ -222,7 +222,7 @@ export default function Topbar({ onMenuClick }) {
             width: '32px',
             height: '32px',
             borderRadius: 'var(--radius-full)',
-            background: 'linear-gradient(135deg, var(--color-brand), #7C3AED)',
+            background: 'var(--color-brand)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -245,13 +245,8 @@ export default function Topbar({ onMenuClick }) {
           <ChevronDown size={14} style={{ color: 'var(--color-text-secondary)' }} />
         </button>
 
-        <AnimatePresence>
           {showProfileMenu && (
-            <motion.div
-              initial={{ opacity: 0, y: -8, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -8, scale: 0.96 }}
-              transition={{ duration: 0.15 }}
+            <div
               style={{
                 position: 'absolute',
                 top: '100%',
@@ -281,9 +276,8 @@ export default function Topbar({ onMenuClick }) {
                 <DropdownItem icon={<User size={16} />} label="Profile" onClick={() => { setShowProfileMenu(false); }} />
                 <DropdownItem icon={<LogOut size={16} />} label="Sign out" onClick={() => { logout(); setShowProfileMenu(false); navigate('/login'); }} />
               </div>
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
       </div>
 
       {/* Responsive styles */}
