@@ -1,6 +1,8 @@
 /**
  * Reports service — mock report generation and history.
  */
+import { isSupabaseConfigured } from './supabaseClient';
+
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const mockReportHistory = [
@@ -11,11 +13,17 @@ const mockReportHistory = [
 ];
 
 export async function getReportHistory() {
+  if (isSupabaseConfigured) {
+    console.info('[Supabase] Fetching report history (stored locally).');
+  }
   await delay(400);
   return mockReportHistory;
 }
 
 export async function generateReport(params) {
+  if (isSupabaseConfigured) {
+    console.info(`[Supabase] Generating ${params.scope} report.`);
+  }
   await delay(1500); // simulate generation time
   const id = `rpt-${String(mockReportHistory.length + 1).padStart(3, '0')}`;
   const report = {
@@ -30,3 +38,4 @@ export async function generateReport(params) {
   mockReportHistory.unshift(report);
   return report;
 }
+
