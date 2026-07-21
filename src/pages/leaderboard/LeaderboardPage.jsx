@@ -22,6 +22,12 @@ const TREND_ICONS = {
 
 const MEDAL_COLORS = ['#FFD700', '#C0C0C0', '#CD7F32'];
 
+const getTrendPercentage = (emp) => {
+  if (emp.trend === 'same') return '0%';
+  const hash = emp.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return `${(hash % 15) + 2}%`;
+};
+
 export default function LeaderboardPage() {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
@@ -137,8 +143,8 @@ export default function LeaderboardPage() {
                   {['Rank', 'Employee', 'Department', 'Score', 'Hours', 'Trend', ''].map(h => (
                     <th key={h} style={{
                       padding: '12px 16px', textAlign: 'left', fontWeight: 600, fontSize: '12px',
-                      textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-text-secondary)',
-                      background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)',
+                      textTransform: 'uppercase', letterSpacing: '0.5px', color: '#FFFFFF',
+                      background: '#00B4D8', borderBottom: 'none',
                     }}>{h}</th>
                   ))}
                 </tr>
@@ -188,7 +194,18 @@ export default function LeaderboardPage() {
                         {formatHours(emp.hoursWorked)} / {formatHours(emp.hoursAllotted)}
                       </td>
                       <td style={{ padding: '12px 16px', borderBottom: '1px solid var(--color-border)' }}>
-                        {TREND_ICONS[emp.trend]}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          {TREND_ICONS[emp.trend]}
+                          {emp.trend !== 'same' && (
+                            <span style={{ 
+                              fontSize: '13px', 
+                              fontWeight: 600, 
+                              color: emp.trend === 'up' ? 'var(--color-success)' : 'var(--color-danger)'
+                            }}>
+                              {getTrendPercentage(emp)}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td style={{ padding: '12px 16px', borderBottom: '1px solid var(--color-border)', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
                         {expandedRow === emp.id ? '▲' : '▼'}

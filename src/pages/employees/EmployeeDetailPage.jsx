@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Download, FileText, Calendar, Upload } from 'lucide-react';
 import { motion } from 'framer-motion';
 import PageContainer from '@/components/shared/layout/PageContainer';
 import Card from '@/components/shared/ui/Card';
@@ -45,6 +45,7 @@ export default function EmployeeDetailPage() {
   const tabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'apps', label: 'App Usage' },
+    { id: 'documents', label: 'Documents' },
     { id: 'history', label: 'History' },
   ];
 
@@ -209,6 +210,58 @@ export default function EmployeeDetailPage() {
               ))}
             </div>
           </Card>
+        )}
+
+        {activeTab === 'documents' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+              <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>Manage and download employee files securely.</p>
+              {/* Note: In a real app, this button would only be visible to HR Admins */}
+              <Button size="sm" onClick={() => window.alert('Opening Admin Upload Modal (e.g. upload new salary slip)')}>
+                <Upload size={16} style={{ marginRight: '6px' }} /> Upload Document
+              </Button>
+            </div>
+            
+            <Card>
+              <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '16px' }}>Onboarding Documents</h3>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ padding: '10px', background: 'var(--color-bg)', borderRadius: 'var(--radius-sm)', color: 'var(--color-brand)' }}>
+                    <FileText size={24} />
+                  </div>
+                  <div>
+                    <h4 style={{ fontSize: '14px', fontWeight: 500, color: 'var(--color-text-primary)' }}>Offer Letter</h4>
+                    <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>Signed on joining date • PDF</p>
+                  </div>
+                </div>
+                <Button size="sm" variant="outline" onClick={() => window.alert('Downloading Offer Letter...')}>
+                  <Download size={16} style={{ marginRight: '6px' }} /> Download
+                </Button>
+              </div>
+            </Card>
+
+            <Card>
+              <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '16px' }}>Payroll & Salary Slips</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {['May 2026', 'April 2026', 'March 2026'].map((month, idx) => (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div style={{ padding: '10px', background: 'var(--color-bg)', borderRadius: 'var(--radius-sm)', color: 'var(--color-text-secondary)' }}>
+                        <Calendar size={24} />
+                      </div>
+                      <div>
+                        <h4 style={{ fontSize: '14px', fontWeight: 500, color: 'var(--color-text-primary)' }}>Salary Slip - {month}</h4>
+                        <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>Generated on 1st of next month • PDF</p>
+                      </div>
+                    </div>
+                    <Button size="sm" variant="outline" onClick={() => window.alert(`Downloading ${month} Salary Slip...`)}>
+                      <Download size={16} style={{ marginRight: '6px' }} /> Download
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
         )}
 
         {activeTab === 'history' && (

@@ -1,55 +1,63 @@
+import { CheckCircle2, XCircle, Clock, Home, Calendar, PieChart, Activity, AlertCircle, HelpCircle } from 'lucide-react';
+
 /**
- * Status badge — pill shape with semantic color tint + matching text.
- * Used for attendance states, employee status, app categories.
+ * Status badge — bespoke pill shape with specific icons, borders, and typography.
  */
 const STATUS_STYLES = {
-  present: { bg: 'var(--color-success-soft)', color: 'var(--color-success)', label: 'Present' },
-  absent: { bg: 'var(--color-danger-soft)', color: 'var(--color-danger)', label: 'Absent' },
-  late: { bg: 'var(--color-warning-soft)', color: 'var(--color-warning)', label: 'Late' },
-  half_day: { bg: 'var(--color-warning-soft)', color: 'var(--color-warning)', label: 'Half-day' },
-  on_leave: { bg: 'var(--color-neutral-soft)', color: 'var(--color-neutral)', label: 'On Leave' },
-  wfh: { bg: 'var(--color-info-soft)', color: 'var(--color-info)', label: 'WFH' },
-  active: { bg: 'var(--color-success-soft)', color: 'var(--color-success)', label: 'Active' },
-  inactive: { bg: 'var(--color-neutral-soft)', color: 'var(--color-neutral)', label: 'Inactive' },
-  productive: { bg: 'var(--color-success-soft)', color: 'var(--color-success)', label: 'Productive' },
-  neutral: { bg: 'var(--color-info-soft)', color: 'var(--color-info)', label: 'Neutral' },
-  distracting: { bg: 'var(--color-warning-soft)', color: 'var(--color-warning)', label: 'Distracting' },
-  success: { bg: 'var(--color-success-soft)', color: 'var(--color-success)', label: '' },
-  warning: { bg: 'var(--color-warning-soft)', color: 'var(--color-warning)', label: '' },
-  danger: { bg: 'var(--color-danger-soft)', color: 'var(--color-danger)', label: '' },
-  info: { bg: 'var(--color-info-soft)', color: 'var(--color-info)', label: '' },
+  present: { bg: 'var(--color-success)', color: '#FFFFFF', label: 'Present' },
+  absent: { bg: 'var(--color-danger)', color: '#FFFFFF', label: 'Absent' },
+  late: { bg: 'var(--color-warning)', color: '#FFFFFF', label: 'Late' },
+  half_day: { bg: 'var(--color-warning)', color: '#FFFFFF', label: 'Half-day' },
+  on_leave: { bg: 'var(--color-neutral)', color: '#FFFFFF', label: 'On Leave' },
+  wfh: { bg: 'var(--color-info)', color: '#FFFFFF', label: 'WFH' },
+  active: { bg: 'var(--color-success)', color: '#FFFFFF', label: 'Active' },
+  inactive: { bg: 'var(--color-neutral)', color: '#FFFFFF', label: 'Inactive' },
+  productive: { bg: 'var(--color-success)', color: '#FFFFFF', label: 'Productive' },
+  neutral: { bg: 'var(--color-info)', color: '#FFFFFF', label: 'Neutral' },
+  distracting: { bg: 'var(--color-warning)', color: '#FFFFFF', label: 'Distracting' },
+  success: { bg: 'var(--color-success)', color: '#FFFFFF', label: '' },
+  warning: { bg: 'var(--color-warning)', color: '#FFFFFF', label: '' },
+  danger: { bg: 'var(--color-danger)', color: '#FFFFFF', label: '' },
+  info: { bg: 'var(--color-info)', color: '#FFFFFF', label: '' },
 };
 
 export default function StatusBadge({ status, label, size = 'sm', style = {} }) {
   const s = STATUS_STYLES[status] || STATUS_STYLES.neutral;
   const displayLabel = label || s.label || status;
   const isSmall = size === 'sm';
+  const Icon = s.icon;
 
   return (
     <span
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: '4px',
-        padding: isSmall ? '2px 10px' : '4px 12px',
-        borderRadius: 'var(--radius-full)',
+        gap: '6px',
+        padding: isSmall ? '4px 10px' : '6px 14px',
+        borderRadius: '0px',
         fontSize: isSmall ? '12px' : '13px',
-        fontWeight: 500,
-        lineHeight: isSmall ? '18px' : '20px',
+        fontWeight: 600,
+        letterSpacing: '0.02em',
+        lineHeight: isSmall ? '16px' : '18px',
         background: s.bg,
         color: s.color,
+        border: 'none',
         whiteSpace: 'nowrap',
+        transition: 'all 0.2s ease',
         ...style,
       }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-1px)';
+        e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = 'none';
+      }}
     >
-      <span style={{
-        width: '6px',
-        height: '6px',
-        borderRadius: '50%',
-        background: s.color,
-        flexShrink: 0,
-      }} />
-      {displayLabel}
+      <span>
+        {displayLabel}
+      </span>
     </span>
   );
 }

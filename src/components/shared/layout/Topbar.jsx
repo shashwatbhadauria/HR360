@@ -50,8 +50,8 @@ export default function Topbar({ onMenuClick }) {
   return (
     <header style={{
       height: '64px',
-      background: 'var(--color-bg)',
-      borderBottom: '1px solid var(--color-border)',
+      background: '#22333b',
+      borderBottom: 'none',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
@@ -59,7 +59,7 @@ export default function Topbar({ onMenuClick }) {
       position: 'sticky',
       top: 0,
       zIndex: 10,
-      boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.02)',
+      boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
     }}>
       {/* Mobile menu button */}
       <button
@@ -83,7 +83,7 @@ export default function Topbar({ onMenuClick }) {
       <h1 style={{
         fontSize: '18px',
         fontWeight: 600,
-        color: 'var(--color-text-primary)',
+        color: '#FFFFFF',
         lineHeight: '26px',
         whiteSpace: 'nowrap',
       }}>
@@ -123,46 +123,29 @@ export default function Topbar({ onMenuClick }) {
             width: '100%',
             height: '100%',
             padding: '0 16px 0 36px',
-            border: '1px solid var(--color-border)',
+            border: '1px solid rgba(255,255,255,0.1)',
             borderRadius: '20px',
-            background: 'var(--color-surface)',
+            background: 'rgba(255,255,255,0.05)',
             fontSize: '13px',
             fontFamily: 'var(--font-sans)',
-            color: 'var(--color-text-primary)',
+            color: '#FFFFFF',
             outline: 'none',
             transition: 'all 0.2s ease',
-            boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)',
+            boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)',
           }}
           onFocus={(e) => {
             e.currentTarget.style.borderColor = 'var(--color-brand)';
-            e.currentTarget.style.boxShadow = '0 0 0 3px rgba(79, 70, 229, 0.1)';
+            e.currentTarget.style.boxShadow = '0 0 0 3px rgba(79, 70, 229, 0.2)';
+            e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
           }}
           onBlur={(e) => {
-            e.currentTarget.style.borderColor = 'var(--color-border)';
-            e.currentTarget.style.boxShadow = 'inset 0 1px 2px rgba(0,0,0,0.02)';
+            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+            e.currentTarget.style.boxShadow = 'inset 0 1px 2px rgba(0,0,0,0.1)';
+            e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
           }}
         />
       </div>
 
-      {/* Data sync indicator */}
-      <div style={{
-        fontSize: '12px',
-        color: 'var(--color-text-secondary)',
-        whiteSpace: 'nowrap',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '6px',
-      }}
-      className="topbar-sync"
-      >
-        <div style={{
-          width: '6px',
-          height: '6px',
-          borderRadius: '50%',
-          background: 'var(--color-success)',
-        }} />
-        Synced {formatTimeAgo(new Date(Date.now() - 5 * 60000))}
-      </div>
 
       {/* Notifications */}
       <button
@@ -172,19 +155,19 @@ export default function Topbar({ onMenuClick }) {
           position: 'relative',
           background: 'none',
           border: 'none',
-          color: 'var(--color-text-secondary)',
+          color: 'rgba(255,255,255,0.6)',
           cursor: 'pointer',
           padding: '8px',
           borderRadius: 'var(--radius-sm)',
           transition: 'color 0.15s, background 0.15s',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'var(--color-bg)';
-          e.currentTarget.style.color = 'var(--color-text-primary)';
+          e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+          e.currentTarget.style.color = '#FFFFFF';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.background = 'none';
-          e.currentTarget.style.color = 'var(--color-text-secondary)';
+          e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
         }}
       >
         <Bell size={20} />
@@ -215,7 +198,7 @@ export default function Topbar({ onMenuClick }) {
             cursor: 'pointer',
             transition: 'background 0.15s',
           }}
-          onMouseEnter={(e) => e.currentTarget.style.background = 'var(--color-bg)'}
+          onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
           onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
         >
           <div style={{
@@ -235,14 +218,14 @@ export default function Topbar({ onMenuClick }) {
           <span style={{
             fontSize: '13px',
             fontWeight: 500,
-            color: 'var(--color-text-primary)',
+            color: '#FFFFFF',
             whiteSpace: 'nowrap',
           }}
           className="topbar-username"
           >
             {user?.name || 'User'}
           </span>
-          <ChevronDown size={14} style={{ color: 'var(--color-text-secondary)' }} />
+          <ChevronDown size={14} style={{ color: 'rgba(255,255,255,0.6)' }} />
         </button>
 
           {showProfileMenu && (

@@ -8,7 +8,7 @@ import Avatar from '@/components/shared/ui/Avatar';
 import EmptyState from '@/components/shared/ui/EmptyState';
 import { SkeletonDashboard } from '@/components/shared/ui/Skeleton';
 import Button from '@/components/shared/ui/Button';
-import { CalendarCheck, UserX, Clock, Home } from 'lucide-react';
+import { CalendarCheck, UserX, UserCheck, Clock, Home } from 'lucide-react';
 import { DEPARTMENTS } from '@/utils/constants';
 import useAttendanceData from './hooks/useAttendanceData';
 
@@ -42,6 +42,16 @@ const ATTENDANCE_COLUMNS = [
   },
 ];
 
+const CustomAttendanceIcon = ({ size = 24, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="7" x2="11" y2="7" />
+    <line x1="3" y1="17" x2="11" y2="17" />
+    <path d="M15 4 l6 6" />
+    <path d="M21 4 l-6 6" />
+    <path d="M14 17 l3 3 l5 -7" />
+  </svg>
+);
+
 export default function AttendancePage() {
   const { records, summary, isLoading, error, filters, setFilters } = useAttendanceData();
   const [department, setDepartment] = useState('');
@@ -64,21 +74,21 @@ export default function AttendancePage() {
               label="Attendance Rate"
               value={summary.attendanceRate}
               suffix="%"
-              icon={<CalendarCheck size={22} />}
-              color="var(--color-success)"
-              colorSoft="var(--color-success-soft)"
+              icon={<CustomAttendanceIcon size={24} color="#8B5CF6" />}
+              color="#8B5CF6"
+              colorSoft="#F5F3FF"
             />
             <KpiCard
               label="Present Today"
               value={summary.presentToday}
-              icon={<CalendarCheck size={22} />}
+              icon={<UserCheck size={24} strokeWidth={2.5} color="#10B981" />}
               color="var(--color-brand)"
               colorSoft="var(--color-brand-soft)"
             />
             <KpiCard
               label="Absent Today"
               value={summary.absentToday}
-              icon={<UserX size={22} />}
+              icon={<UserX size={24} strokeWidth={2.5} color="#EF4444" />}
               color="var(--color-danger)"
               colorSoft="var(--color-danger-soft)"
             />

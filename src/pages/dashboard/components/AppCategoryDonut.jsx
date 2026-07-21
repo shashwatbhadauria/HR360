@@ -1,19 +1,21 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import Card from '@/components/shared/ui/Card';
 import ChartTooltip from '@/components/shared/charts/ChartTooltip';
+import { MoreHorizontal } from 'lucide-react';
+
+const CUSTOM_COLORS = ['#F59E0B', '#4F46E5', '#EF4444']; 
 
 export default function AppCategoryDonut({ data }) {
   if (!data?.length) return null;
 
+  const totalValue = data.reduce((sum, item) => sum + item.value, 0);
+
   return (
-    <Card>
-      <div style={{ marginBottom: '16px' }}>
-        <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-primary)' }}>
-          App Usage by Category
+    <div style={{ background: 'white', borderRadius: '24px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', height: '100%', position: 'relative' }}>
+      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-primary)', margin: 0 }}>
+          App Information
         </h3>
-        <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
-          Organization-wide application time split
-        </p>
+        <MoreHorizontal size={20} color="var(--color-text-secondary)" style={{ cursor: 'pointer' }} />
       </div>
       <ResponsiveContainer width="100%" height={280}>
         <PieChart>
@@ -21,56 +23,27 @@ export default function AppCategoryDonut({ data }) {
             data={data}
             cx="50%"
             cy="50%"
-            innerRadius="55%"
-            outerRadius="80%"
+            innerRadius="75%" 
+            outerRadius="90%"
             dataKey="value"
             nameKey="category"
-            paddingAngle={3}
-            animationDuration={800}
-            animationEasing="ease-out"
+            paddingAngle={0}
+            stroke="none"
           >
             {data.map((entry, i) => (
-              <Cell key={i} fill={entry.color} stroke="none" />
+              <Cell key={i} fill={CUSTOM_COLORS[i % CUSTOM_COLORS.length]} />
             ))}
           </Pie>
           <Tooltip content={<ChartTooltip />} />
-          <Legend
-            verticalAlign="bottom"
-            iconType="circle"
-            iconSize={8}
-            wrapperStyle={{ fontSize: '12px', fontFamily: 'Inter, sans-serif' }}
-          />
+          <Legend iconType="square" iconSize={12} wrapperStyle={{ fontSize: '12px' }} />
         </PieChart>
       </ResponsiveContainer>
-      {/* Center label */}
-      <div style={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -60%)',
-        textAlign: 'center',
-        pointerEvents: 'none',
-      }}>
-        <div style={{
-          fontSize: '28px',
-          fontWeight: 800,
-          color: 'var(--color-text-primary)',
-          letterSpacing: '-1px',
-          lineHeight: '1',
-        }}>
-          {data.find(d => d.category === 'Productive')?.value || 0}%
-        </div>
-        <div style={{
-          fontSize: '11px',
-          fontWeight: 600,
-          color: 'var(--color-success)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px',
-          marginTop: '4px',
-        }}>
-          Productive
-        </div>
+      
+      {/* Center Text */}
+      <div style={{ position: 'absolute', top: '55%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', pointerEvents: 'none' }}>
+        <div style={{ fontSize: '32px', fontWeight: 800, color: '#111' }}>{totalValue.toLocaleString()}</div>
+        <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', lineHeight: 1.4 }}>Total Minutes<br/>This week</div>
       </div>
-    </Card>
+    </div>
   );
 }

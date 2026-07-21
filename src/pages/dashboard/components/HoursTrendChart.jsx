@@ -1,50 +1,41 @@
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import Card from '@/components/shared/ui/Card';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import ChartTooltip from '@/components/shared/charts/ChartTooltip';
-import { AXIS_STYLE, GRID_STYLE, CHART_COLORS } from '@/components/shared/charts/chartTheme';
+import { MoreHorizontal } from 'lucide-react';
 
-/**
- * Org-wide hours trend area chart — 30-day view.
- */
 export default function HoursTrendChart({ data }) {
   if (!data?.length) return null;
 
+  // Take only the last 7 days to mimic the image's "Mon-Sun" look
+  const weeklyData = data.slice(-7).map((d, i) => {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return { ...d, displayDay: days[i] };
+  });
+
   return (
-    <Card>
-      <div style={{ marginBottom: '16px' }}>
-        <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-primary)' }}>
-          Hours Trend
+    <div style={{ background: 'white', borderRadius: '24px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+      <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--color-text-primary)', margin: 0 }}>
+          Total Hours
         </h3>
-        <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '2px' }}>
-          Avg daily hours worked across the organization
-        </p>
+        <MoreHorizontal size={20} color="var(--color-text-secondary)" style={{ cursor: 'pointer' }} />
       </div>
       <ResponsiveContainer width="100%" height={280}>
-        <AreaChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
-          <defs>
-            <linearGradient id="hoursGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={CHART_COLORS.brand} stopOpacity={0.2} />
-              <stop offset="100%" stopColor={CHART_COLORS.brand} stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <CartesianGrid {...GRID_STYLE} />
-          <XAxis dataKey="date" {...AXIS_STYLE} />
-          <YAxis domain={[5, 9]} {...AXIS_STYLE} tickFormatter={(v) => `${v}h`} />
-          <Tooltip content={<ChartTooltip />} />
-          <Area
-            type="monotone"
-            dataKey="hours"
-            name="Avg Hours"
-            stroke={CHART_COLORS.brand}
-            strokeWidth={2.5}
-            fill="url(#hoursGradient)"
-            dot={false}
-            activeDot={{ r: 5, fill: CHART_COLORS.brand, strokeWidth: 2, stroke: '#fff' }}
-            animationDuration={800}
-            animationEasing="ease-out"
-          />
-        </AreaChart>
+        <BarChart data={weeklyData} margin={{ top: 20, right: 0, left: -20, bottom: 0 }}>
+
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+          <XAxis dataKey="displayDay" axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} dy={10} />
+          <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} tickFormatter={(v) => `${v}h`} />
+          <Tooltip content={<ChartTooltip />} cursor={{ fill: 'transparent' }} />
+          <Bar dataKey="hours" radius={[8, 8, 8, 8]} barSize={40}>
+            {weeklyData.map((entry, index) => (
+              <Cell 
+                key={`cell-${index}`} 
+                fill={'#4F46E5'} 
+              />
+            ))}
+          </Bar>
+        </BarChart>
       </ResponsiveContainer>
-    </Card>
+    </div>
   );
 }

@@ -14,7 +14,7 @@ export default function DepartmentBarChart({ data }) {
   if (!data?.length) return null;
 
   return (
-    <Card>
+    <div style={{ background: 'white', borderRadius: '24px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', height: '100%' }}>
       <div style={{ marginBottom: '16px' }}>
         <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-primary)' }}>
           Department Comparison
@@ -62,6 +62,6 @@ export default function DepartmentBarChart({ data }) {
           </Bar>
         </BarChart>
       </ResponsiveContainer>
-    </Card>
+    </div>
   );
 }
