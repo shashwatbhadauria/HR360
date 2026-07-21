@@ -1,6 +1,8 @@
 /**
  * Settings service — allotted hours, app categories, alert thresholds.
  */
+import { supabase, isSupabaseConfigured } from './supabaseClient';
+
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 let settingsState = {
@@ -32,12 +34,55 @@ let settingsState = {
 };
 
 export async function getSettings() {
+  if (isSupabaseConfigured) {
+    try {
+      const { data, error } = await supabase
+        .from('app_classifications')
+        .select('*');
+      
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        const appCategories = data.map(item => ({
+          app: item.display_name,
+          category: item.category,
+        }));
+        return {
+          ...settingsState,
+          appCategories,
+        };
+      }
+    } catch (err) {
+      console.error('[Supabase] Error fetching settings, falling back to mock:', err);
+    }
+  }
+
   await delay(400);
   return { ...settingsState };
 }
 
 export async function updateSettings(updates) {
+  if (isSupabaseConfigured) {
+    try {
+      if (updates.appCategories) {
+        for (const item of updates.appCategories) {
+          const { error } = await supabase
+            .from('app_classifications')
+            .update({ category: item.category })
+            .eq('display_name', item.app);
+          if (error) throw error;
+        }
+      }
+      // Also update local state
+      settingsState = { ...settingsState, ...updates };
+      return settingsState;
+    } catch (err) {
+      console.error('[Supabase] Error updating settings:', err);
+    }
+  }
+
   await delay(500);
   settingsState = { ...settingsState, ...updates };
   return settingsState;
 }
+
