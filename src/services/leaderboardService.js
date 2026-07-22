@@ -1,10 +1,7 @@
 /**
  * Leaderboard data service.
  */
-import leaderboardMock from '@/mocks/leaderboard.json';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
-
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function getLeaderboard(filters = {}) {
   if (isSupabaseConfigured) {
@@ -37,7 +34,7 @@ export async function getLeaderboard(filters = {}) {
         let list = employees.map(emp => {
           const total = empTotalMins[emp.id] || 0;
           const prod = empProdMins[emp.id] || 0;
-          const score = total > 0 ? Math.round((prod / total) * 1000) / 10 : 75.0; // default 75
+          const score = total > 0 ? Math.round((prod / total) * 1000) / 10 : 0; 
           const hoursWorked = Math.round((total / 60) * 10) / 10;
           return {
             id: emp.id,
@@ -47,7 +44,7 @@ export async function getLeaderboard(filters = {}) {
             score,
             hoursWorked,
             hoursAllotted: 40,
-            breakdown: { hours: score + 2, apps: score - 2, attendance: score },
+            breakdown: { hours: score > 0 ? score + 2 : 0, apps: score > 0 ? score - 2 : 0, attendance: score },
             trend: 'same',
           };
         });
@@ -64,18 +61,9 @@ export async function getLeaderboard(filters = {}) {
         return list.map((item, i) => ({ ...item, rank: i + 1 }));
       }
     } catch (err) {
-      console.error('[Supabase] Error compiling leaderboard, falling back to mock:', err);
+      console.error('[Supabase] Error compiling leaderboard:', err);
     }
   }
 
-  await delay(500);
-  let result = [...leaderboardMock];
-
-  if (filters.department) {
-    result = result.filter(e => e.department === filters.department);
-  }
-
-  // Re-rank after filtering
-  return result.map((item, i) => ({ ...item, rank: i + 1 }));
+  return [];
 }
-
