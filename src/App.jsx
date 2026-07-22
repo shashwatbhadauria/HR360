@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Navigate } from 'react-router-dom';
 import Sidebar from '@/components/shared/layout/Sidebar';
 import Topbar from '@/components/shared/layout/Topbar';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { useAuth } from '@/context/AuthContext';
 
 /**
  * Root layout shell — Sidebar + Topbar + page content (Outlet).
@@ -11,8 +12,13 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 export default function App() {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(isMobile);
+  const { isAuthenticated } = useAuth();
 
   const toggleSidebar = () => setSidebarCollapsed((prev) => !prev);
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <div style={{

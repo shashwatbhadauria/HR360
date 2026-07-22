@@ -20,9 +20,12 @@ export default function LoginPage() {
       setError('Please enter email and password');
       return;
     }
-    const success = await login(email, password);
-    if (success) navigate('/');
-    else setError('Invalid credentials');
+    const result = await login(email, password);
+    if (result.success) {
+      navigate('/');
+    } else {
+      setError(result.message || 'Invalid credentials');
+    }
   };
 
   return (
