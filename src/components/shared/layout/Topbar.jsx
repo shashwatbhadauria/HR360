@@ -4,6 +4,8 @@ import { Search, Bell, Menu, LogOut, User, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { formatTimeAgo } from '@/utils/formatters';
+import { useDebounce } from '@/hooks/useDebounce';
+import { getEmployees } from '@/services/employeeService';
 
 const PAGE_TITLES = {
   '/': 'Dashboard',
@@ -28,20 +30,55 @@ export default function Topbar({ onMenuClick }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const debouncedSearch = useDebounce(searchValue, 300);
+
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const profileRef = useRef(null);
+  const searchRef = useRef(null);
   const title = getPageTitle(location.pathname);
 
-  // Close profile menu when clicking outside
+  // Close profile menu and search when clicking outside
   useEffect(() => {
     const handler = (e) => {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
         setShowProfileMenu(false);
       }
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setShowSuggestions(false);
+      }
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
+
+  // Fetch search results
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchResults() {
+      if (!debouncedSearch.trim()) {
+        setSearchResults([]);
+        setShowSuggestions(false);
+        return;
+      }
+      setIsSearching(true);
+      try {
+        const data = await getEmployees({ search: debouncedSearch.trim() });
+        if (!cancelled) {
+          setSearchResults(data.slice(0, 5));
+          setShowSuggestions(true);
+        }
+      } catch (err) {
+        console.error("Search error:", err);
+      } finally {
+        if (!cancelled) setIsSearching(false);
+      }
+    }
+    fetchResults();
+    return () => { cancelled = true; };
+  }, [debouncedSearch]);
 
   const initials = user?.name
     ? user.name.split(' ').map(n => n[0]).join('').toUpperCase()
@@ -94,14 +131,16 @@ export default function Topbar({ onMenuClick }) {
       <div style={{ flex: 1 }} />
 
       {/* Search */}
-      <div style={{
-        position: 'relative',
-        maxWidth: '320px',
-        width: '100%',
-        height: '40px',
-        margin: '0 24px',
-      }}
-      className="topbar-search"
+      <div 
+        ref={searchRef}
+        style={{
+          position: 'relative',
+          maxWidth: '320px',
+          width: '100%',
+          height: '40px',
+          margin: '0 24px',
+        }}
+        className="topbar-search"
       >
         <Search
           size={16}
@@ -118,7 +157,10 @@ export default function Topbar({ onMenuClick }) {
           type="text"
           placeholder="Search employees, reports..."
           value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
+          onChange={(e) => {
+            setSearchValue(e.target.value);
+            if (!e.target.value.trim()) setShowSuggestions(false);
+          }}
           style={{
             width: '100%',
             height: '100%',
@@ -137,13 +179,89 @@ export default function Topbar({ onMenuClick }) {
             e.currentTarget.style.borderColor = 'var(--color-brand)';
             e.currentTarget.style.boxShadow = '0 0 0 3px rgba(79, 70, 229, 0.2)';
             e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+            if (searchValue.trim() && searchResults.length > 0) {
+              setShowSuggestions(true);
+            }
           }}
           onBlur={(e) => {
             e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
             e.currentTarget.style.boxShadow = 'inset 0 1px 2px rgba(0,0,0,0.1)';
             e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
           }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              if (searchValue.trim()) {
+                navigate(`/employees?search=${encodeURIComponent(searchValue.trim())}`);
+              } else {
+                navigate('/employees');
+              }
+              setSearchValue('');
+              setShowSuggestions(false);
+            }
+          }}
         />
+
+        {/* Suggestions Dropdown */}
+        <AnimatePresence>
+          {showSuggestions && searchResults.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.15 }}
+              style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                right: 0,
+                marginTop: '8px',
+                background: 'var(--color-surface)',
+                border: '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-md)',
+                boxShadow: 'var(--shadow-dropdown)',
+                overflow: 'hidden',
+                zIndex: 50,
+              }}
+            >
+              {searchResults.map((emp, index) => (
+                <button
+                  key={emp.id}
+                  onClick={() => {
+                    navigate(`/employees/${emp.id}`);
+                    setShowSuggestions(false);
+                    setSearchValue('');
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    width: '100%',
+                    padding: '10px 16px',
+                    border: 'none',
+                    borderBottom: index < searchResults.length - 1 ? '1px solid var(--color-border)' : 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    transition: 'background 0.15s',
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'var(--color-bg)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                >
+                  <div style={{
+                    width: '32px', height: '32px', borderRadius: '50%', background: 'var(--color-brand)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '11px', fontWeight: 600
+                  }}>
+                    {emp.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-primary)' }}>{emp.name}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}>{emp.department} • {emp.role}</div>
+                  </div>
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
 

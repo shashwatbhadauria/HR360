@@ -8,8 +8,8 @@ import Button from '@/components/shared/ui/Button';
 export default function LoginPage() {
   const { login, isLoading } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('sarah.mitchell@company.com');
-  const [password, setPassword] = useState('password');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 

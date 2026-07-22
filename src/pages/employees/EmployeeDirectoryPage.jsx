@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import PageContainer from '@/components/shared/layout/PageContainer';
 import Card from '@/components/shared/ui/Card';
 import DataTable from '@/components/shared/ui/DataTable';
@@ -17,11 +17,28 @@ import { getEmployees } from '@/services/employeeService';
 
 export default function EmployeeDirectoryPage() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlSearch = searchParams.get('search') || '';
+  
   const [employees, setEmployees] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(urlSearch);
   const [department, setDepartment] = useState('');
   const debouncedSearch = useDebounce(search, 300);
+
+  // Sync internal state with URL changes (e.g., from Topbar search)
+  useEffect(() => {
+    setSearch(urlSearch);
+  }, [urlSearch]);
+
+  const handleSearchChange = (e) => {
+    const val = e.target.value;
+    setSearch(val);
+    const newParams = new URLSearchParams(searchParams);
+    if (val) newParams.set('search', val);
+    else newParams.delete('search');
+    setSearchParams(newParams, { replace: true });
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -109,7 +126,7 @@ export default function EmployeeDirectoryPage() {
                 type="text"
                 placeholder="Search by name, email, department…"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={handleSearchChange}
                 style={{
                   width: '100%', height: '36px', padding: '0 12px 0 34px',
                   borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)',

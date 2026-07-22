@@ -35,6 +35,7 @@ export async function getOrgAppUsage() {
             category: item.category,
             totalMinutes: item.totalMinutes,
             activeUsers: item.activeUsers.size,
+            trend: 0, // Default trend since historical comparison isn't in this summary query
           }))
           .sort((a, b) => b.totalMinutes - a.totalMinutes);
       }
@@ -60,7 +61,7 @@ export async function getCategoryTrend() {
         data.forEach(s => {
           const dateStr = new Date(s.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
           if (!trendMap[dateStr]) {
-            trendMap[dateStr] = { date: dateStr, productive: 0, neutral: 0, distracting: 0 };
+            trendMap[dateStr] = { week: dateStr, productive: 0, neutral: 0, distracting: 0, _rawDate: s.date };
           }
           const cat = s.category.toLowerCase();
           if (cat === 'productive' || cat === 'neutral' || cat === 'distracting') {
@@ -68,7 +69,7 @@ export async function getCategoryTrend() {
           }
         });
 
-        return Object.values(trendMap).sort((a, b) => new Date(a.date) - new Date(b.date));
+        return Object.values(trendMap).sort((a, b) => new Date(a._rawDate) - new Date(b._rawDate));
       }
     } catch (err) {
       console.error('[Supabase] Error fetching category trend:', err);
@@ -106,6 +107,7 @@ export async function getEmployeeAppUsage(employeeId) {
             app: item.app,
             category: item.category,
             totalMinutes: item.totalMinutes,
+            trend: 0,
           }))
           .sort((a, b) => b.totalMinutes - a.totalMinutes);
       }
