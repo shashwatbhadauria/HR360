@@ -1,17 +1,16 @@
 /**
  * App usage data service.
  */
-import appUsageMock from '@/mocks/appUsage.json';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
-
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function getOrgAppUsage() {
   if (isSupabaseConfigured) {
     try {
       const { data, error } = await supabase
         .from('screentime_daily_summary')
-        .select('app_name, category, total_minutes, employee_id');
+        .select('app_name, category, total_minutes, employee_id')
+        .order('date', { ascending: false })
+        .limit(2000);
       if (error) throw error;
 
       if (data && data.length > 0) {
@@ -35,7 +34,7 @@ export async function getOrgAppUsage() {
             category: item.category,
             totalMinutes: item.totalMinutes,
             activeUsers: item.activeUsers.size,
-            trend: 0, // Default trend since historical comparison isn't in this summary query
+            trend: 0, 
           }))
           .sort((a, b) => b.totalMinutes - a.totalMinutes);
       }
@@ -43,9 +42,7 @@ export async function getOrgAppUsage() {
       console.error('[Supabase] Error fetching org app usage:', err);
     }
   }
-
-  await delay(500);
-  return appUsageMock.orgWide;
+  return [];
 }
 
 export async function getCategoryTrend() {
@@ -53,7 +50,9 @@ export async function getCategoryTrend() {
     try {
       const { data, error } = await supabase
         .from('screentime_daily_summary')
-        .select('date, category, total_minutes');
+        .select('date, category, total_minutes')
+        .order('date', { ascending: false })
+        .limit(2000);
       if (error) throw error;
 
       if (data && data.length > 0) {
@@ -75,9 +74,7 @@ export async function getCategoryTrend() {
       console.error('[Supabase] Error fetching category trend:', err);
     }
   }
-
-  await delay(400);
-  return appUsageMock.categoryTrend;
+  return [];
 }
 
 export async function getEmployeeAppUsage(employeeId) {
@@ -86,7 +83,9 @@ export async function getEmployeeAppUsage(employeeId) {
       const { data, error } = await supabase
         .from('screentime_daily_summary')
         .select('app_name, category, total_minutes')
-        .eq('employee_id', employeeId);
+        .eq('employee_id', employeeId)
+        .order('date', { ascending: false })
+        .limit(1000);
       if (error) throw error;
 
       if (data && data.length > 0) {
@@ -115,12 +114,6 @@ export async function getEmployeeAppUsage(employeeId) {
       console.error('[Supabase] Error fetching employee app usage:', err);
     }
   }
-
-  await delay(400);
-  // Return a subset of org apps as if it were employee-specific
-  return appUsageMock.orgWide.slice(0, 8).map(app => ({
-    ...app,
-    totalMinutes: Math.round(app.totalMinutes / (5 + Math.random() * 10)),
-  }));
+  return [];
 }
 

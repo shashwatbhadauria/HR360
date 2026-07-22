@@ -1,12 +1,7 @@
 /**
  * Dashboard data service — fetches KPIs, trends, department comparison, and alerts.
- * Falls back to mock data when no backend is available.
  */
-import dashboardMock from '@/mocks/dashboard.json';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
-
-// Simulate async fetch with realistic delay
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function getDashboardSummary() {
   if (isSupabaseConfigured) {
@@ -17,21 +12,29 @@ export async function getDashboardSummary() {
       const appCategorySplit = await getAppCategorySplit();
       const alerts = await getAlerts();
 
+      // Top employees can be dynamically fetched, but for now we'll just return an empty array if we don't calculate it
+      // To calculate it, we'd query the DB for the top performers. 
       return {
         kpis,
         hoursTrend,
         departmentComparison,
         appCategorySplit,
         alerts,
-        topEmployees: dashboardMock.topEmployees, // Keep top employees from mock or compute if needed
+        topEmployees: [], 
       };
     } catch (err) {
-      console.error('[Supabase] Error compiling dashboard summary, falling back to mock:', err);
+      console.error('[Supabase] Error compiling dashboard summary:', err);
     }
   }
 
-  await delay(600);
-  return dashboardMock;
+  return {
+    kpis: await getDashboardKpis(),
+    hoursTrend: [],
+    departmentComparison: [],
+    appCategorySplit: [],
+    alerts: [],
+    topEmployees: [],
+  };
 }
 
 export async function getDashboardKpis() {
@@ -68,28 +71,31 @@ export async function getDashboardKpis() {
           productiveMins += s.total_minutes;
         }
       });
-      const avgUtil = totalMins > 0 ? Math.round((productiveMins / totalMins) * 1000) / 10 : 84.2;
+      const avgUtil = totalMins > 0 ? Math.round((productiveMins / totalMins) * 1000) / 10 : 0;
 
       // 4. Flagged employees (count of employees with low utilization)
-      // For simplicity, count inactive employees or those with low hours in the database
       const { count: flaggedCount } = await supabase
         .from('employees')
         .select('*', { count: 'exact', head: true })
         .eq('status', 'inactive');
 
       return {
-        avgUtilization: { value: avgUtil || 84.2, previous: 81.5, suffix: "%" },
-        attendanceRate: { value: attendanceRate || 92.1, previous: 90.8, suffix: "%" },
-        activeEmployees: { value: activeCount || 23, previous: 22, suffix: "" },
-        flaggedEmployees: { value: flaggedCount || 4, previous: 6, suffix: "" },
+        avgUtilization: { value: avgUtil || 0, previous: 0, suffix: "%" },
+        attendanceRate: { value: attendanceRate || 0, previous: 0, suffix: "%" },
+        activeEmployees: { value: activeCount || 0, previous: 0, suffix: "" },
+        flaggedEmployees: { value: flaggedCount || 0, previous: 0, suffix: "" },
       };
     } catch (err) {
       console.error('[Supabase] Error fetching dashboard KPIs:', err);
     }
   }
 
-  await delay(400);
-  return dashboardMock.kpis;
+  return {
+    avgUtilization: { value: 0, previous: 0, suffix: "%" },
+    attendanceRate: { value: 0, previous: 0, suffix: "%" },
+    activeEmployees: { value: 0, previous: 0, suffix: "" },
+    flaggedEmployees: { value: 0, previous: 0, suffix: "" },
+  };
 }
 
 export async function getHoursTrend() {
@@ -114,10 +120,9 @@ export async function getHoursTrend() {
         // Convert to array of { date, hours }
         const trend = Object.keys(dayMinutes).map(date => {
           const totalHours = dayMinutes[date] / 60;
-          // Approximate average per employee (let's divide total hours by distinct employees)
           return {
             date,
-            hours: Math.round((totalHours / 10) * 10) / 10 || 7.0, // scale it realistically
+            hours: Math.round((totalHours / 10) * 10) / 10 || 0, 
           };
         });
 
@@ -129,8 +134,7 @@ export async function getHoursTrend() {
     }
   }
 
-  await delay(500);
-  return dashboardMock.hoursTrend;
+  return [];
 }
 
 export async function getDepartmentComparison() {
@@ -171,7 +175,7 @@ export async function getDepartmentComparison() {
         return Object.keys(deptEmpCounts).map(dept => {
           const total = deptTotal[dept] || 0;
           const prod = deptProd[dept] || 0;
-          const utilization = total > 0 ? Math.round((prod / total) * 1000) / 10 : 80;
+          const utilization = total > 0 ? Math.round((prod / total) * 1000) / 10 : 0;
           return {
             department: dept,
             utilization,
@@ -184,8 +188,7 @@ export async function getDepartmentComparison() {
     }
   }
 
-  await delay(450);
-  return dashboardMock.departmentComparison;
+  return [];
 }
 
 export async function getAppCategorySplit() {
@@ -221,8 +224,7 @@ export async function getAppCategorySplit() {
     }
   }
 
-  await delay(350);
-  return dashboardMock.appCategorySplit;
+  return [];
 }
 
 export async function getAlerts() {
@@ -247,7 +249,6 @@ export async function getAlerts() {
     }
   }
 
-  await delay(300);
-  return dashboardMock.alerts;
+  return [];
 }
 
