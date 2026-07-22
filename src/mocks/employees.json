@@ -1,4 +1,5 @@
 [
+  { "id": "hr-admin-1", "name": "Sarah Mitchell", "email": "sarah.mitchell@company.com", "department": "Human Resources", "role": "HR Admin", "status": "active", "joinDate": "2020-01-15", "avatar": null },
   { "id": "emp-001", "name": "Alex Thompson", "email": "alex.thompson@company.com", "department": "Engineering", "role": "Senior Developer", "status": "active", "joinDate": "2023-03-15", "avatar": null },
   { "id": "emp-002", "name": "Priya Sharma", "email": "priya.sharma@company.com", "department": "Engineering", "role": "Full Stack Developer", "status": "active", "joinDate": "2022-08-01", "avatar": null },
   { "id": "emp-003", "name": "Marcus Chen", "email": "marcus.chen@company.com", "department": "Design", "role": "UI/UX Designer", "status": "active", "joinDate": "2023-06-20", "avatar": null },

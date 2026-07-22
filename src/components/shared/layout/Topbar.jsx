@@ -256,7 +256,7 @@ export default function Topbar({ onMenuClick }) {
                 </div>
               </div>
               <div style={{ padding: '4px' }}>
-                <DropdownItem icon={<User size={16} />} label="Profile" onClick={() => { setShowProfileMenu(false); }} />
+                <DropdownItem icon={<User size={16} />} label="Profile" onClick={() => { setShowProfileMenu(false); navigate(`/employees/${user?.id}`); }} />
                 <DropdownItem icon={<LogOut size={16} />} label="Sign out" onClick={() => { logout(); setShowProfileMenu(false); navigate('/login'); }} />
               </div>
             </div>
